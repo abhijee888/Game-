@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Puzzle Game</title>
+  <style>
+    #puzzle-container {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 5px;
+    }
+
+    .puzzle-piece {
+      width: 100px;
+      height: 100px;
+      background-color: #eee;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5em;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div id="puzzle-container"></div>
+
+<script>
+  const puzzleContainer = document.getElementById('puzzle-container');
+
+  // Sample puzzle pieces
+  const puzzlePieces = ['1', '2', '3', '4', '5', '6', '7', '8', ''];
+
+  // Shuffle the puzzle pieces
+  puzzlePieces.sort(() => Math.random() - 0.5);
+
+  // Create puzzle pieces and add them to the container
+  puzzlePieces.forEach((piece, index) => {
+    const puzzlePiece = document.createElement('div');
+    puzzlePiece.className = 'puzzle-piece';
+    puzzlePiece.textContent = piece;
+    puzzlePiece.addEventListener('click', () => onPieceClick(index));
+    puzzleContainer.appendChild(puzzlePiece);
+  });
+
+  // Function to handle piece click
+  function onPieceClick(index) {
+    const emptyIndex = puzzlePieces.indexOf('');
+    if (isAdjacent(index, emptyIndex)) {
+      // Swap the clicked piece with the empty space
+      [puzzlePieces[index], puzzlePieces[emptyIndex]] = [puzzlePieces[emptyIndex], puzzlePieces[index]];
+
+      // Update the displayed puzzle
+      updatePuzzle();
+    }
+  }
+
+  // Function to check if two pieces are adjacent
+  function isAdjacent(index1, index2) {
+    const row1 = Math.floor(index1 / 3);
+    const col1 = index1 % 3;
+    const row2 = Math.floor(index2 / 3);
+    const col2 = index2 % 3;
+
+    return Math.abs(row1 - row2) + Math.abs(col1 - col2) === 1;
+  }
+
+  // Function to update the displayed puzzle
+  function updatePuzzle() {
+    // Clear the current puzzle display
+    puzzleContainer.innerHTML = '';
+
+    // Create and add the updated puzzle pieces to the container
+    puzzlePieces.forEach((piece, index) => {
+      const puzzlePiece = document.createElement('div');
+      puzzlePiece.className = 'puzzle-piece';
+      puzzlePiece.textContent = piece;
+      puzzlePiece.addEventListener('click', () => onPieceClick(index));
+      puzzleContainer.appendChild(puzzlePiece);
+    });
+
+    // Check if the puzzle is solved
+    if (puzzlePieces.join('') === '12345678') {
+      alert('Congratulations! Puzzle solved.');
+    }
+  }
+</script>
+
+</body>
+</html>
